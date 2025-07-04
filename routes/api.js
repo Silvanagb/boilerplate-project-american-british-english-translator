@@ -1,31 +1,39 @@
-app.route('/api/translate')
-  .post((req, res) => {
-    const { text, locale } = req.body;
+'use strict';
 
-    if (!text || !locale) {
-      return res.status(200).json({ error: 'Required field(s) missing' });
-    }
+const Translator = require('../components/translator.js');
 
-    if (text.trim() === '') {
-      return res.status(200).json({ error: 'No text to translate' });
-    }
+module.exports = function (app) {
+  const translator = new Translator();
 
-    if (!['american-to-british', 'british-to-american'].includes(locale)) {
-      return res.status(200).json({ error: 'Invalid value for locale field' });
-    }
+  app.route('/api/translate')
+    .post((req, res) => {
+      const { text, locale } = req.body;
 
-    const raw = translator.translate(text, locale); // sin <span>
-    const highlighted = translator.translateAndHighlight(text, locale); // con <span>
+      if (!text || !locale) {
+        return res.status(200).json({ error: 'Required field(s) missing' });
+      }
 
-    if (raw === text) {
+      if (text.trim() === '') {
+        return res.status(200).json({ error: 'No text to translate' });
+      }
+
+      if (!['american-to-british', 'british-to-american'].includes(locale)) {
+        return res.status(200).json({ error: 'Invalid value for locale field' });
+      }
+
+      const plain = translator.translate(text, locale);
+      const highlighted = translator.translateAndHighlight(text, locale);
+
+      if (plain === text) {
+        return res.status(200).json({
+          text,
+          translation: "Everything looks good to me!"
+        });
+      }
+
       return res.status(200).json({
         text,
-        translation: "Everything looks good to me!"
+        translation: highlighted
       });
-    }
-
-    return res.status(200).json({
-      text,
-      translation: highlighted
     });
-  });
+};
