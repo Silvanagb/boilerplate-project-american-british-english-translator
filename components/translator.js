@@ -1,169 +1,121 @@
-const americanOnly = require('./american-only.js');
-const americanToBritishSpelling = require('./american-to-british-spelling.js');
-const americanToBritishTitles = require("./american-to-british-titles.js");
-const britishOnly = require('./british-only.js');
-
 class Translator {
 
   translateAndHighlight(strText, strLocale) {
     let strTranslated = '' + strText;
-
-    // SPELLING
-    if (strLocale === 'american-to-british') {
+    if(strLocale == 'american-to-british') {
+      // translate spelling
       let keys = Object.keys(americanToBritishSpelling);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
-        strTranslated = strTranslated.replace(regex, '<span class="highlight">' + americanToBritishSpelling[key] + '</span>');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+americanToBritishSpelling[key]+'</span>');
       }
-    }
-
-    if (strLocale === 'british-to-american') {
-      let keys = Object.keys(americanToBritishSpelling);
-      for (let key of keys) {
-        let val = americanToBritishSpelling[key];
-        let regex = new RegExp('(?<![\\w-])' + val + '(?![\\w-])', 'gi');
-        strTranslated = strTranslated.replace(regex, '<span class="highlight">' + key + '</span>');
+      // translate titles
+      keys = Object.keys(americanToBritishTitles);
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+americanToBritishTitles[key]+'</span>');
       }
-    }
-
-    // TITLES/HONORIFICS
-    let keys = Object.keys(americanToBritishTitles);
-    for (let key of keys) {
-      let brit = americanToBritishTitles[key];
-
-      if (strLocale === 'american-to-british') {
-        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = '<span class="highlight">' + brit + '</span>' + ' ';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = '<span class="highlight">' + brit.charAt(0).toUpperCase() + brit.slice(1) + '</span>' + ' ';
-          }
-          return replacement;
-        });
-      }
-
-      if (strLocale === 'british-to-american') {
-        let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = '<span class="highlight">' + key + '</span>' + ' ';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = '<span class="highlight">' + key.charAt(0).toUpperCase() + key.slice(1) + '</span>' + ' ';
-          }
-          return replacement;
-        });
-      }
-    }
-
-    // EXPRESSIONS
-    if (strLocale === 'american-to-british') {
+      // replace untranslatable words
       keys = Object.keys(americanOnly);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
-        strTranslated = strTranslated.replace(regex, '<span class="highlight">' + americanOnly[key] + '</span>');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+americanOnly[key]+'</span>');
       }
+      // format time (ex: 10:30 to 10.30)
+      let regex = /([0-9]{1,2})([:])([0-9]{1,2})/g;
+      strTranslated = strTranslated.replace(regex, '<span class="highlight">$1.$3</span>');
     }
-
-    if (strLocale === 'british-to-american') {
+    if(strLocale == 'british-to-american') {
+      // translate spelling
+      let keys = Object.keys(americanToBritishSpelling);
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+americanToBritishSpelling[key]+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+key+'</span>');
+      }
+      // translate titles
+      keys = Object.keys(americanToBritishTitles);
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+americanToBritishTitles[key]+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+key+'</span>');
+      }
+      // replace untranslatable words
       keys = Object.keys(britishOnly);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
-        strTranslated = strTranslated.replace(regex, '<span class="highlight">' + britishOnly[key] + '</span>');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, '<span class="highlight">'+britishOnly[key]+'</span>');
       }
+      // format time (ex: 10:30 to 10.30)
+      let regex = /([0-9]{1,2})([\.])([0-9]{1,2})/g;
+      strTranslated = strTranslated.replace(regex, '<span class="highlight">$1:$3</span>');
     }
-
-    // TIME FORMAT
-    if (strLocale === 'american-to-british') {
-      let regex = /(\d{1,2}):(\d{2})/g;
-      strTranslated = strTranslated.replace(regex, '<span class="highlight">$1.$2</span>');
-    }
-
-    if (strLocale === 'british-to-american') {
-      let regex = /(\d{1,2})\.(\d{2})/g;
-      strTranslated = strTranslated.replace(regex, '<span class="highlight">$1:$2</span>');
-    }
-
-    return strTranslated.trim();
+    return strTranslated;
   }
 
   translate(strText, strLocale) {
     let strTranslated = '' + strText;
-
-    // SPELLING
-    if (strLocale === 'american-to-british') {
+    if(strLocale == 'american-to-british') {
+      // translate spelling
       let keys = Object.keys(americanToBritishSpelling);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
         strTranslated = strTranslated.replace(regex, americanToBritishSpelling[key]);
       }
+      // translate titles (American to British, remove dot)
+keys = Object.keys(americanToBritishTitles);
+for (let key of keys) {
+  let regex = new RegExp(`\\b${key.replace('.', '\\.')}(?=\\s)`, 'gi');
+  strTranslated = strTranslated.replace(regex, (match) => {
+    let replacement = americanToBritishTitles[key];
+    // conservar mayúscula si aplica
+    if (match[0] === match[0].toUpperCase()) {
+      replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
     }
-
-    if (strLocale === 'british-to-american') {
-      let keys = Object.keys(americanToBritishSpelling);
-      for (let key of keys) {
-        let val = americanToBritishSpelling[key];
-        let regex = new RegExp('(?<![\\w-])' + val + '(?![\\w-])', 'gi');
-        strTranslated = strTranslated.replace(regex, key);
-      }
-    }
-
-    // TITLES/HONORIFICS
-    let keys = Object.keys(americanToBritishTitles);
-    for (let key of keys) {
-      let brit = americanToBritishTitles[key];
-
-      if (strLocale === 'american-to-british') {
-        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = brit + ' ';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = brit.charAt(0).toUpperCase() + brit.slice(1) + ' ';
-          }
-          return replacement;
-        });
-      }
-
-      if (strLocale === 'british-to-american') {
-        let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = key + ' ';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = key.charAt(0).toUpperCase() + key.slice(1) + ' ';
-          }
-          return replacement;
-        });
-      }
-    }
-
-    // EXPRESSIONS
-    if (strLocale === 'american-to-british') {
+    return replacement;
+  });
+}
+      // replace untranslatable words
       keys = Object.keys(americanOnly);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
         strTranslated = strTranslated.replace(regex, americanOnly[key]);
       }
+      // format time (ex: 10:30 to 10.30)
+      let regex = /([0-9]{1,2})([:])([0-9]{1,2})/g;
+      strTranslated = strTranslated.replace(regex, '$1.$3');
     }
+    if(strLocale == 'british-to-american') {
+      // translate spelling
+      let keys = Object.keys(americanToBritishSpelling);
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+americanToBritishSpelling[key]+'(?![\\w-])', 'gi');
+        strTranslated = strTranslated.replace(regex, key);
+      }
+      // translate titles
+        keys = Object.keys(americanToBritishTitles);
+for (let key of keys) {
+  let regex = new RegExp(`\\b${americanToBritishTitles[key]}\\b`, 'gi');
+  let replacement = key;
+  strTranslated = strTranslated.replace(regex, (match) => {
+    let formatted = replacement;
+    if (match[0] === match[0].toUpperCase()) {
+      formatted = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    }
+    return formatted;
+  });
+}
 
-    if (strLocale === 'british-to-american') {
+      // replace untranslatable words
       keys = Object.keys(britishOnly);
-      for (let key of keys) {
-        let regex = new RegExp('(?<![\\w-])' + key + '(?![\\w-])', 'gi');
+      for(let key of keys) {
+        let regex = new RegExp('(?<![\\w-])'+key+'(?![\\w-])', 'gi');
         strTranslated = strTranslated.replace(regex, britishOnly[key]);
       }
+      // format time (ex: 10:30 to 10.30)
+      let regex = /([0-9]{1,2})([\.])([0-9]{1,2})/g;
+      strTranslated = strTranslated.replace(regex, '$1:$3');
     }
-
-    // TIME FORMAT
-    if (strLocale === 'american-to-british') {
-      let regex = /(\d{1,2}):(\d{2})/g;
-      strTranslated = strTranslated.replace(regex, '$1.$2');
-    }
-
-    if (strLocale === 'british-to-american') {
-      let regex = /(\d{1,2})\.(\d{2})/g;
-      strTranslated = strTranslated.replace(regex, '$1:$2');
-    }
-
-    return strTranslated.trim();
+    return strTranslated;
   }
-}
+ }
 
 module.exports = Translator;
