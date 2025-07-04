@@ -89,7 +89,7 @@ class Translator {
       const brit = americanToBritishTitles[key];
 
       if (strLocale === 'american-to-british') {
-        const regex = new RegExp(`\\b${key.replace('.', '\\.')}\\b`, 'gi');
+        const regex = new RegExp(`\\b${key}\\b`, 'gi');
         strTranslated = strTranslated.replace(regex, (match) => {
           const replacement = brit;
           return match[0] === match[0].toUpperCase()
