@@ -83,31 +83,32 @@ class Translator {
   translateAndHighlight(strText, strLocale) {
     let strTranslated = '' + strText;
 
-    // Honórificos
-    let keys = Object.keys(americanToBritishTitles);
-    for (let key of keys) {
-      const brit = americanToBritishTitles[key];
+  // Honoríficos
+let keys = Object.keys(americanToBritishTitles);
+for (let key of keys) {
+  const brit = americanToBritishTitles[key];
 
-      if (strLocale === 'american-to-british') {
-        const regex = new RegExp(`\\b${key}\\b`, 'gi');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          const replacement = brit;
-          return match[0] === match[0].toUpperCase()
-            ? `<span class="highlight">${replacement.charAt(0).toUpperCase() + replacement.slice(1)}</span>`
-            : `<span class="highlight">${replacement}</span>`;
-        });
-      }
+  if (strLocale === 'american-to-british') {
+    const regex = new RegExp(`\\b${key.replace('.', '\\.')}\\b`, 'gi');
+    strTranslated = strTranslated.replace(regex, (match) => {
+      const replacement = brit;
+      return match[0] === match[0].toUpperCase()
+        ? `<span class="highlight">${replacement.charAt(0).toUpperCase() + replacement.slice(1)}</span>`
+        : `<span class="highlight">${replacement}</span>`;
+    });
+  }
 
-      if (strLocale === 'british-to-american') {
-        const regex = new RegExp(`\\b${brit}\\b`, 'gi');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          const replacement = key;
-          return match[0] === match[0].toUpperCase()
-            ? `<span class="highlight">${replacement.charAt(0).toUpperCase() + replacement.slice(1)}</span>`
-            : `<span class="highlight">${replacement}</span>`;
-        });
-      }
-    }
+  if (strLocale === 'british-to-american') {
+    const regex = new RegExp(`\\b${brit}\\b`, 'gi');
+    strTranslated = strTranslated.replace(regex, (match) => {
+      const replacement = key;
+      return match[0] === match[0].toUpperCase()
+        ? `<span class="highlight">${replacement.charAt(0).toUpperCase() + replacement.slice(1)}</span>`
+        : `<span class="highlight">${replacement}</span>`;
+    });
+  }
+}
+
 
     // Spelling
     if (strLocale === 'american-to-british') {
