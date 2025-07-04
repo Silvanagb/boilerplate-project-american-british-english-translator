@@ -67,17 +67,18 @@ class Translator {
         strTranslated = strTranslated.replace(regex, americanToBritishSpelling[key]);
       }
 
-      keys = Object.keys(americanToBritishTitles);
-      for (let key of keys) {
-        let regex = new RegExp('\\b' + key.replace('.', '\\.') + '\\b', 'gi');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = americanToBritishTitles[key];
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
-          }
-          return replacement;
-        });
-      }
+     keys = Object.keys(americanToBritishTitles);
+for (let key of keys) {
+  // quitar el punto final del match usando \\b y escape de "."
+  let regex = new RegExp('\\b' + key.replace('.', '\\.') + '(?=\\s)', 'gi');
+  strTranslated = strTranslated.replace(regex, (match) => {
+    let replacement = americanToBritishTitles[key];
+    if (match[0] === match[0].toUpperCase()) {
+      replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    }
+    return replacement;
+  });
+}
 
       keys = Object.keys(americanOnly);
       for(let key of keys) {
