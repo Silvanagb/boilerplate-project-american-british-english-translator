@@ -27,33 +27,32 @@ class Translator {
     }
 
     // TITLES/HONORIFICS
-let keys = Object.keys(americanToBritishTitles);
-for (let key of keys) {
-  let brit = americanToBritishTitles[key];
+    let keys = Object.keys(americanToBritishTitles);
+    for (let key of keys) {
+      let brit = americanToBritishTitles[key];
 
-  if (strLocale === 'american-to-british') {
-    let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
-    strTranslated = strTranslated.replace(regex, (match) => {
-      let replacement = '<span class="highlight">' + brit + '</span>' + ' ';
-      if (match[0] === match[0].toUpperCase()) {
-        replacement = '<span class="highlight">' + brit.charAt(0).toUpperCase() + brit.slice(1) + '</span>' + ' ';
+      if (strLocale === 'american-to-british') {
+        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
+        strTranslated = strTranslated.replace(regex, (match) => {
+          let replacement = '<span class="highlight">' + brit + '</span>' + ' ';
+          if (match[0] === match[0].toUpperCase()) {
+            replacement = '<span class="highlight">' + brit.charAt(0).toUpperCase() + brit.slice(1) + '</span>' + ' ';
+          }
+          return replacement;
+        });
       }
-      return replacement;
-    });
-  }
 
-  if (strLocale === 'british-to-american') {
-    let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
-    strTranslated = strTranslated.replace(regex, (match) => {
-      let replacement = '<span class="highlight">' + key + '</span>' + ' ';
-      if (match[0] === match[0].toUpperCase()) {
-        replacement = '<span class="highlight">' + key.charAt(0).toUpperCase() + key.slice(1) + '</span>' + ' ';
+      if (strLocale === 'british-to-american') {
+        let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
+        strTranslated = strTranslated.replace(regex, (match) => {
+          let replacement = '<span class="highlight">' + key + '</span>' + ' ';
+          if (match[0] === match[0].toUpperCase()) {
+            replacement = '<span class="highlight">' + key.charAt(0).toUpperCase() + key.slice(1) + '</span>' + ' ';
+          }
+          return replacement;
+        });
       }
-      return replacement;
-    });
-  }
-}
-
+    }
 
     // EXPRESSIONS
     if (strLocale === 'american-to-british') {
@@ -83,7 +82,7 @@ for (let key of keys) {
       strTranslated = strTranslated.replace(regex, '<span class="highlight">$1:$2</span>');
     }
 
-    return strTranslated;
+    return strTranslated.trim();
   }
 
   translate(strText, strLocale) {
@@ -113,22 +112,22 @@ for (let key of keys) {
       let brit = americanToBritishTitles[key];
 
       if (strLocale === 'american-to-british') {
-        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\b`, 'gi');
+        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
         strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = brit;
+          let replacement = brit + ' ';
           if (match[0] === match[0].toUpperCase()) {
-            replacement = brit.charAt(0).toUpperCase() + brit.slice(1);
+            replacement = brit.charAt(0).toUpperCase() + brit.slice(1) + ' ';
           }
           return replacement;
         });
       }
 
       if (strLocale === 'british-to-american') {
-        let regex = new RegExp(`\\b${brit}\\b`, 'gi');
+        let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
         strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = key;
+          let replacement = key + ' ';
           if (match[0] === match[0].toUpperCase()) {
-            replacement = key.charAt(0).toUpperCase() + key.slice(1);
+            replacement = key.charAt(0).toUpperCase() + key.slice(1) + ' ';
           }
           return replacement;
         });
@@ -163,7 +162,7 @@ for (let key of keys) {
       strTranslated = strTranslated.replace(regex, '$1:$2');
     }
 
-    return strTranslated;
+    return strTranslated.trim();
   }
 }
 
