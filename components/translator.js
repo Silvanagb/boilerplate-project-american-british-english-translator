@@ -118,7 +118,7 @@ for (let key of keys) {
       // format time (ex: 10:30 to 10.30)
       let regex = /([0-9]{1,2})([\.])([0-9]{1,2})/g;
       strTranslated = strTranslated.replace(regex, '$1:$3');
-    }
+    
     return strTranslated;
   }
  }
