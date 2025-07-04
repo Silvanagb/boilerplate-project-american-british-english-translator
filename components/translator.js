@@ -27,32 +27,33 @@ class Translator {
     }
 
     // TITLES/HONORIFICS
-    let keys = Object.keys(americanToBritishTitles);
-    for (let key of keys) {
-      let brit = americanToBritishTitles[key];
+let keys = Object.keys(americanToBritishTitles);
+for (let key of keys) {
+  let brit = americanToBritishTitles[key];
 
-      if (strLocale === 'american-to-british') {
-        let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\b`, 'gi');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = '<span class="highlight">' + brit + '</span>';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = '<span class="highlight">' + brit.charAt(0).toUpperCase() + brit.slice(1) + '</span>';
-          }
-          return replacement;
-        });
+  if (strLocale === 'american-to-british') {
+    let regex = new RegExp(`\\b${key.replace('.', '\\.')}\\s(?=[A-Z])`, 'g');
+    strTranslated = strTranslated.replace(regex, (match) => {
+      let replacement = '<span class="highlight">' + brit + '</span>' + ' ';
+      if (match[0] === match[0].toUpperCase()) {
+        replacement = '<span class="highlight">' + brit.charAt(0).toUpperCase() + brit.slice(1) + '</span>' + ' ';
       }
+      return replacement;
+    });
+  }
 
-      if (strLocale === 'british-to-american') {
-        let regex = new RegExp(`\\b${brit}\\b`, 'gi');
-        strTranslated = strTranslated.replace(regex, (match) => {
-          let replacement = '<span class="highlight">' + key + '</span>';
-          if (match[0] === match[0].toUpperCase()) {
-            replacement = '<span class="highlight">' + key.charAt(0).toUpperCase() + key.slice(1) + '</span>';
-          }
-          return replacement;
-        });
+  if (strLocale === 'british-to-american') {
+    let regex = new RegExp(`\\b${brit}\\s(?=[A-Z])`, 'g');
+    strTranslated = strTranslated.replace(regex, (match) => {
+      let replacement = '<span class="highlight">' + key + '</span>' + ' ';
+      if (match[0] === match[0].toUpperCase()) {
+        replacement = '<span class="highlight">' + key.charAt(0).toUpperCase() + key.slice(1) + '</span>' + ' ';
       }
-    }
+      return replacement;
+    });
+  }
+}
+
 
     // EXPRESSIONS
     if (strLocale === 'american-to-british') {
