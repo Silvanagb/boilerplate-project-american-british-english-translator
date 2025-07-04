@@ -85,7 +85,7 @@ for (let key of keys) {
         strTranslated = strTranslated.replace(regex, americanOnly[key]);
       }
       // format time (ex: 10:30 to 10.30)
-      let regex = /([0-9]{1,2})([:])([0-9]{1,2})/g;
+      regex = /([0-9]{1,2})([:])([0-9]{1,2})/g;
       strTranslated = strTranslated.replace(regex, '$1.$3');
     }
     if(strLocale == 'british-to-american') {
