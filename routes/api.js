@@ -9,13 +9,13 @@ module.exports = function (app) {
     .post((req, res) => {
       const { text, locale } = req.body;
 
-      if (!text || !locale) {
-        return res.status(200).json({ error: 'Required field(s) missing' });
-      }
+      if (text === undefined || locale === undefined) {
+  return res.status(200).json({ error: 'Required field(s) missing' });
+}
 
-      if (text.trim() === '') {
-        return res.status(200).json({ error: 'No text to translate' });
-      }
+if (text.trim() === '') {
+  return res.status(200).json({ error: 'No text to translate' });
+}
 
       if (!['american-to-british', 'british-to-american'].includes(locale)) {
         return res.status(200).json({ error: 'Invalid value for locale field' });
