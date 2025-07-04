@@ -68,14 +68,14 @@ class Translator {
       // translate titles (American to British, remove dot)
 keys = Object.keys(americanToBritishTitles);
 for (let key of keys) {
-  let regex = new RegExp(`\\b${key.replace('.', '\\.')}(?=\\s)`, 'gi');
+  let regex = new RegExp('\\b' + key.replace('.', '\\.') + '\\b', 'gi');
   strTranslated = strTranslated.replace(regex, (match) => {
     let replacement = americanToBritishTitles[key];
     // conservar mayúscula si aplica
     if (match[0] === match[0].toUpperCase()) {
       replacement = replacement.charAt(0).toUpperCase() + replacement.slice(1);
     }
-    return replacement;
+    return `<span class="highlight">${replacement}</span>`;
   });
 }
       // replace untranslatable words
