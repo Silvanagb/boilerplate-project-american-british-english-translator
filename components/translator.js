@@ -69,14 +69,14 @@ class Translator {
 
      keys = Object.keys(americanToBritishTitles);
 for (let key of keys) {
-  let regex = new RegExp(`\\b${americanToBritishTitles[key]}\\b`, 'gi');
-  let replacement = key;
+  let value = americanToBritishTitles[key];
+  let regex = new RegExp(`\\b${value}\\b`, 'gi');
   strTranslated = strTranslated.replace(regex, (match) => {
-    let formatted = replacement;
+    let replacement = key; // Ej: 'Dr.'
     if (match[0] === match[0].toUpperCase()) {
-      formatted = replacement.charAt(0).toUpperCase() + replacement.slice(1);
+      replacement = replacement[0].toUpperCase() + replacement.slice(1);
     }
-    return formatted;
+    return replacement;
   });
 }
 
